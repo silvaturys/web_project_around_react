@@ -3,15 +3,55 @@ import Main from "../components/Main"
 import Footer from "../components/Footer"
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
+import { useState, useEffect } from "react";
+import api from "../utils/api";
 
 function App() {
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+  const [userName, setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
+ 
+  const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
+  const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
+  const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
+
+  const closeAllPopups = () =>{
+    setIsAddPlacePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+  }
+
+  useEffect (() => {
+    api.getUserInfo().then((userData) => {
+      setUserName(userData.name);
+      setUserDescription(userData.about);
+      setUserAvatar(userData.avatar);
+    })
+    .catch((err) => {
+      console.log("Erro ao carregar dados do usuário: ", err);
+    });
+  }, []);
+
   return (
     <div className="page">
       <Header />
-      <Main> 
+      <Main
+       onEditProfileClick={handleEditProfileClick}
+       onAddPlaceClick={handleAddPlaceClick}
+       onEditAvatarClick={handleEditAvatarClick}
+       userName={userName} // Passando os dados do usuário como props
+       userDescription={userDescription}
+       userAvatar={userAvatar}/>
+
         <PopupWithForm 
         name="edit-profile" 
-        title="Editar Perfil">
+        title="Editar Perfil"
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}>
         <input
           type="text"
           className="popup__input"
@@ -37,7 +77,11 @@ function App() {
         <span className="popup__error" id="area-error" />
         </PopupWithForm>
 
-        <PopupWithForm name="add-post" title="Novo Local">
+        <PopupWithForm 
+        name="add-post" 
+        title="Novo Local"
+        isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups}>
         <input
           name="name"
           type="text"
@@ -60,7 +104,11 @@ function App() {
         <span className="popup__error" id="image-link-error" />
         </PopupWithForm>
 
-        <PopupWithForm name="edit-avatar" title="Alterar a foto de perfil">
+        <PopupWithForm 
+        name="edit-avatar" 
+        title="Alterar a foto de perfil"
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}>
         <input
           type="url"
           className="popup__input"
@@ -75,7 +123,6 @@ function App() {
         </PopupWithForm>
 
         <ImagePopup></ImagePopup>
-      </Main>
       <Footer />
     </div>
   );
