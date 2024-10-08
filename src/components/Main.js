@@ -11,7 +11,8 @@ export default function Main({
   userName,
   userDescription,
   userAvatar,
-  cards
+  cards, 
+  onCardClick
 }){
     return(
         <main className="content">
@@ -67,6 +68,7 @@ export default function Main({
         <Card 
         key={item._id} 
         data={item}
+        onCardClick={onCardClick}
         />
       ))}
     </section>

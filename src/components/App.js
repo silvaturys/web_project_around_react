@@ -11,6 +11,9 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+
   const [userName, setUserName] = useState('');
   const [userDescription, setUserDescription] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -21,10 +24,16 @@ function App() {
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
 
+  function handleCardClick(card) {
+    setSelectedCard(card);
+    setIsImagePopupOpen(true);
+  }
+
   const closeAllPopups = () =>{
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
+    setIsImagePopupOpen(false);
   }
 
   useEffect (() => {
@@ -55,10 +64,17 @@ function App() {
        onEditProfileClick={handleEditProfileClick}
        onAddPlaceClick={handleAddPlaceClick}
        onEditAvatarClick={handleEditAvatarClick}
-       userName={userName} // Passando os dados do usuário como props
+       userName={userName}
        userDescription={userDescription}
        userAvatar={userAvatar}
-       cards={cards}/>
+       cards={cards}
+       onCardClick={handleCardClick}/>
+
+      <ImagePopup 
+      card={selectedCard}  
+      isOpen={isImagePopupOpen}
+      onClose={closeAllPopups}  
+      />
 
         <PopupWithForm 
         name="edit-profile" 
