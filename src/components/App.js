@@ -14,6 +14,8 @@ function App() {
   const [userName, setUserName] = useState('');
   const [userDescription, setUserDescription] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
+
+  const [cards, setCards] = useState([]);
  
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
@@ -36,6 +38,16 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    api.getInitialCards()
+      .then((cardsData) => {
+        setCards(cardsData);
+      })
+      .catch((err) => {
+        console.log("Erro ao carregar os cartões: ", err);
+      });
+  }, []);
+
   return (
     <div className="page">
       <Header />
@@ -45,7 +57,8 @@ function App() {
        onEditAvatarClick={handleEditAvatarClick}
        userName={userName} // Passando os dados do usuário como props
        userDescription={userDescription}
-       userAvatar={userAvatar}/>
+       userAvatar={userAvatar}
+       cards={cards}/>
 
         <PopupWithForm 
         name="edit-profile" 

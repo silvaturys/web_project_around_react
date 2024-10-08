@@ -2,6 +2,7 @@ import avatarEdit from "../images/editprofile.svg"
 import editIcon from "../images/edit__vector.svg"
 import addIcon from "../images/add__button.svg"
 import closeIcon from "../images/CloseIcon.svg"
+import Card from "./Card"
 
 export default function Main({
   onEditProfileClick,
@@ -9,7 +10,8 @@ export default function Main({
   onEditAvatarClick,
   userName,
   userDescription,
-  userAvatar
+  userAvatar,
+  cards
 }){
     return(
         <main className="content">
@@ -19,7 +21,7 @@ export default function Main({
         <div className="profile__avatar-container" onClick={onEditAvatarClick}>
           <img
             src={userAvatar}
-            alt="imagem de um idoso"
+            alt="imagem de perfil"
             className="profile__image"
           />
           <img
@@ -60,6 +62,14 @@ export default function Main({
     </button>
   </div>
 </section>
+<section className="elements">
+      {cards.map((item) => (
+        <Card 
+        key={item._id} 
+        data={item}
+        />
+      ))}
+    </section>
   </main>
     );
 }
