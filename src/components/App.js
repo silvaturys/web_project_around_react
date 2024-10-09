@@ -10,6 +10,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
@@ -23,6 +24,7 @@ function App() {
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
+  const handleDeletePopupClick = () => setIsConfirmDeletePopupOpen(true)
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -34,6 +36,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsConfirmDeletePopupOpen(false);
   }
 
   useEffect (() => {
@@ -68,7 +71,8 @@ function App() {
        userDescription={userDescription}
        userAvatar={userAvatar}
        cards={cards}
-       onCardClick={handleCardClick}/>
+       onCardClick={handleCardClick}
+       onDeleteClick={handleDeletePopupClick}/>
 
       <ImagePopup 
       card={selectedCard}  
@@ -90,7 +94,7 @@ function App() {
           autoComplete="name"
           minLength={2}
           maxLength={40}
-          required=""
+          required
         />
         <span className="popup__error" id="name-error" />
         <input
@@ -101,7 +105,7 @@ function App() {
           placeholder="Sobre mim"
           minLength={2}
           maxLength={200}
-          required=""
+          required
         />
         <span className="popup__error" id="area-error" />
         </PopupWithForm>
@@ -119,7 +123,7 @@ function App() {
           placeholder="Título"
           minLength={2}
           maxLength={30}
-          required=""
+          required
         />
         <span className="popup__error" id="title-error" />
         <input
@@ -128,7 +132,7 @@ function App() {
           className="popup__input"
           id="image-link"
           placeholder="Link de imagem"
-          required=""
+          required
         />
         <span className="popup__error" id="image-link-error" />
         </PopupWithForm>
@@ -144,12 +148,21 @@ function App() {
           id="input-link"
           name="avatarLink"
           placeholder="Link da imagem"
-          required=""
+          required
         />
         <span className="input-link-error popup__error" id="input-link-error">
           Por favor, introduza um endereço da web.
         </span>
         </PopupWithForm>
+
+        <PopupWithForm 
+        name="delete-confirmation"
+        title="Tem certeza?"
+        isOpen={isConfirmDeletePopupOpen}
+        onClose={closeAllPopups}
+        isDeleteConfirmation={true}
+      ></PopupWithForm>
+    
 
         <ImagePopup></ImagePopup>
       <Footer />

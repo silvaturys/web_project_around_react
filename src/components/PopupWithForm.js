@@ -1,6 +1,6 @@
 import closeIcon from "../images/CloseIcon.svg"
 
-export default function PopupWithForm({ title, name, children, isOpen, onClose}) {
+export default function PopupWithForm({ title, name, children, isOpen, onClose, isDeleteConfirmation }) {
     return(
         <div className={`popup popup_type_${name} ${isOpen ? "popup_opened" : ""}`}>
             <div className="popup__content">
@@ -10,7 +10,7 @@ export default function PopupWithForm({ title, name, children, isOpen, onClose})
                 <form className="popup__form" name={name}>
                     <h3 className="popup__title">{title}</h3>
                 {children}
-          <button className="popup__button" type="submit">Salvar</button>
+          <button className="popup__button" type="submit">{isDeleteConfirmation ? "Sim" : "Salvar"}</button>
                 </form>
             </div>
         </div>

@@ -12,7 +12,8 @@ export default function Main({
   userDescription,
   userAvatar,
   cards, 
-  onCardClick
+  onCardClick,
+  onDeleteClick
 }){
     return(
         <main className="content">
@@ -47,28 +48,13 @@ export default function Main({
         </button>
       </div>
     </section>
-     {/*------------------------COFIRMAR DELETE-------------------------*/}
-    <section className="popup " id="popup-delete-confirmation">
-  <div className="popup__content" id="popupFormConfirmation">
-    <button className="popup__close-button" type="button">
-      <img
-        src={closeIcon}
-        alt="Ícone de fechar"
-        className="popup__close-button"
-      />
-    </button>
-    <h2 className="popup__title">Tem certeza?</h2>
-    <button type="button" value="submit" className="popup__button">
-      Sim
-    </button>
-  </div>
-</section>
 <section className="elements">
       {cards.map((item) => (
         <Card 
         key={item._id} 
         data={item}
         onCardClick={onCardClick}
+        onDeleteClick={onDeleteClick}
         />
       ))}
     </section>

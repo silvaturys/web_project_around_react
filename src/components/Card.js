@@ -1,8 +1,7 @@
 import trash from "../images/Trash.svg"
 import heart from "../images/heart.svg"
 
-export default function Card({ data, onCardClick }) {
-    console.log(data)
+export default function Card({ data, onCardClick, onDeleteClick }) {
     const {link, likes, name} = data
 
     const handleClick = () => {
@@ -11,7 +10,7 @@ export default function Card({ data, onCardClick }) {
 
     return(
         <div className="element">
-            <button className="element__button element__button_trash" type="button">
+            <button className="element__button element__button_trash" type="button" onClick={onDeleteClick}>
                 <img
                 src={trash}
                 alt="icone de lixeira"
@@ -29,7 +28,7 @@ export default function Card({ data, onCardClick }) {
                     className="element__icon"
                     />
                 </button>
-                <span className="elements__likes-number"> {likes.lenght} </span>
+                <span className="elements__likes-number"> {likes.length} </span>
                 </div>
             </div>
         </div>
