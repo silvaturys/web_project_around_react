@@ -1,20 +1,22 @@
 import avatarEdit from "../images/editprofile.svg"
 import editIcon from "../images/edit__vector.svg"
 import addIcon from "../images/add__button.svg"
-import closeIcon from "../images/CloseIcon.svg"
 import Card from "./Card"
+import { useContext } from "react"
+import { CurrentUserContext } from "../contexts/CurrentUserContext"
 
 export default function Main({
   onEditProfileClick,
   onAddPlaceClick,
   onEditAvatarClick,
-  userName,
-  userDescription,
-  userAvatar,
   cards, 
   onCardClick,
-  onDeleteClick
+  onDeleteClick, 
+  onCardLike
 }){
+
+  const currentUser= useContext(CurrentUserContext)
+  if (!currentUser) return null 
     return(
         <main className="content">
     {/*-----------------------------AREA DO PERFIL---------------------------*/}
@@ -22,7 +24,7 @@ export default function Main({
       <div className="profile__container">
         <div className="profile__avatar-container" onClick={onEditAvatarClick}>
           <img
-            src={userAvatar}
+            src={currentUser.avatar}
             alt="imagem de perfil"
             className="profile__image"
           />
@@ -32,8 +34,8 @@ export default function Main({
             className="profile__avatar-edit"
           />
         </div>
-        <h1 className="profile__name"> {userName} </h1>
-        <p className="profile__area"> {userDescription} </p>
+        <h1 className="profile__name"> {currentUser.name} </h1>
+        <p className="profile__area"> {currentUser.about} </p>
         <button type="button" className="profile__edit-button" onClick={onEditProfileClick}>
           <img
             src={editIcon}
@@ -55,6 +57,7 @@ export default function Main({
         data={item}
         onCardClick={onCardClick}
         onDeleteClick={onDeleteClick}
+        onCardLike={onCardLike} 
         />
       ))}
     </section>

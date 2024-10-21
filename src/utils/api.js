@@ -141,6 +141,20 @@
         });
     }
 
+    changeLikeCardStatus (cardId, isLiked) {
+      if(!isLiked) {
+        return this.addLike(cardId)
+      }
+      return this.removeLike(cardId);
+    }
+
+    changeLikeCardStatus(cardId, isLiked) {
+      return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+        method: isLiked ? "PUT" : "DELETE",
+        headers: this._headers,
+      }).then(this._checkResponse);
+    }
+
   }
 
   const api = new Api({
