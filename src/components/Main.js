@@ -11,8 +11,9 @@ export default function Main({
   onEditAvatarClick,
   cards, 
   onCardClick,
-  onDeleteClick, 
-  onCardLike
+  // onDeleteClick, confirmation without support yet
+  onCardLike,
+  onCardDelete
 }){
 
   const currentUser= useContext(CurrentUserContext)
@@ -56,8 +57,9 @@ export default function Main({
         key={item._id} 
         data={item}
         onCardClick={onCardClick}
-        onDeleteClick={onDeleteClick}
+        // onDeleteClick={onDeleteClick} confirmation without support yet
         onCardLike={onCardLike} 
+        onCardDelete={onCardDelete}
         />
       ))}
     </section>

@@ -6,6 +6,9 @@ import ImagePopup from "./ImagePopup";
 import { useState, useEffect } from "react";
 import api from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import EditProfile from "./EditProfile";
+import EditAvatar from "./EditAvatar";
+import NewCard from "./NewCard";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -23,7 +26,7 @@ function App() {
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
-  const handleDeletePopupClick = () => setIsConfirmDeletePopupOpen(true)
+  // const handleDeletePopupClick = () => setIsConfirmDeletePopupOpen(true) confirmation without support yet
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -47,6 +50,42 @@ function App() {
     });
   }, []);
 
+  function handleUpdateUser({ name, about }) {
+    api
+      .updateUserProfile(name, about)
+      .then((updatedUserData) => {
+        setCurrentUser(updatedUserData);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error("Erro ao atualizar o perfil: ${err}"); 
+      });
+  }
+
+  function handleUpdateAvatar({ avatar }) {
+    api
+      .updateAvatar(avatar)
+      .then((updatedUserData) => {
+        setCurrentUser(updatedUserData);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error(`Erro ao atualizar o avatar: ${err}`); // Se há um erro, será exibido no console;
+      });
+  }
+
+  function handleNewCardSubmit({ link, name }) {
+    api
+      .createCard(link, name)
+      .then((newCard) => {
+        setCards([newCard, ...cards]); // Atualiza o novo card
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error(`Erro ao adicionar um novo card ${err}`); // Se há um erro, será exibido no console;
+      });
+  }
+
   useEffect(() => {
     api.getInitialCards()
       .then((cardsData) => {
@@ -56,6 +95,7 @@ function App() {
         console.log("Erro ao carregar os cartões: ", err);
       });
   }, []);
+
 
   async function handleCardLike(card) {
     const isLiked = card.likes.some(user => user._id === currentUser._id);
@@ -69,6 +109,15 @@ function App() {
       .catch((error) => console.error(error));
   }
 
+  async function handleCardDelete(card) {
+    try {
+      await api.deleteCard(card._id);
+      setCards((prevCards) => prevCards.filter((currentCard) => currentCard._id !== card._id));
+    } catch (err) {
+      console.log("Erro ao deletar o cartão:", err);
+    }
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
      <div className="page">
@@ -80,8 +129,10 @@ function App() {
        onEditAvatarClick={handleEditAvatarClick}
        cards={cards}
        onCardClick={handleCardClick}
-       onDeleteClick={handleDeletePopupClick}
-       onCardLike={handleCardLike}/>
+      //  onDeleteClick={handleDeletePopupClick} confirmation without support yet
+       onCardLike={handleCardLike}
+       onCardDelete={handleCardDelete}
+       />
 
       <ImagePopup 
       card={selectedCard}  
@@ -89,81 +140,22 @@ function App() {
       onClose={closeAllPopups}  
       />
 
-        <PopupWithForm 
-        name="edit-profile" 
-        title="Editar Perfil"
+      <EditProfile
         isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}>
-        <input
-          type="text"
-          className="popup__input"
-          id="name"
-          name="name"
-          placeholder="Nome"
-          autoComplete="name"
-          minLength={2}
-          maxLength={40}
-          required
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateUser}
         />
-        <span className="popup__error" id="name-error" />
-        <input
-          name="about"
-          type="text"
-          className="popup__input"
-          id="area"
-          placeholder="Sobre mim"
-          minLength={2}
-          maxLength={200}
-          required
-        />
-        <span className="popup__error" id="area-error" />
-        </PopupWithForm>
 
-        <PopupWithForm 
-        name="add-post" 
-        title="Novo Local"
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}>
-        <input
-          name="name"
-          type="text"
-          className="popup__input"
-          id="title"
-          placeholder="Título"
-          minLength={2}
-          maxLength={30}
-          required
-        />
-        <span className="popup__error" id="title-error" />
-        <input
-          name="link"
-          type="url"
-          className="popup__input"
-          id="image-link"
-          placeholder="Link de imagem"
-          required
-        />
-        <span className="popup__error" id="image-link-error" />
-        </PopupWithForm>
+      <EditAvatar
+       isOpen={isEditAvatarPopupOpen}
+       onClose={closeAllPopups}
+       onUpdateAvatar={handleUpdateAvatar}/>
 
-        <PopupWithForm 
-        name="edit-avatar" 
-        title="Alterar a foto de perfil"
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}>
-        <input
-          type="url"
-          className="popup__input"
-          id="input-link"
-          name="avatarLink"
-          placeholder="Link da imagem"
-          required
-        />
-        <span className="input-link-error popup__error" id="input-link-error">
-          Por favor, introduza um endereço da web.
-        </span>
-        </PopupWithForm>
-
+       <NewCard
+       isOpen={isAddPlacePopupOpen}
+       onClose={closeAllPopups}
+       onAddPlaceSubmit={handleNewCardSubmit}/>
+      
         <PopupWithForm 
         name="delete-confirmation"
         title="Tem certeza?"
