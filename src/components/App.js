@@ -1,7 +1,6 @@
 import Header from "../components/Header"
 import Main from "../components/Main"
 import Footer from "../components/Footer"
-import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import { useState, useEffect } from "react";
 import api from "../utils/api";
@@ -9,12 +8,13 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditProfile from "./EditProfile";
 import EditAvatar from "./EditAvatar";
 import NewCard from "./NewCard";
+import ConfirmDelete from "./ConfirmDelete";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
@@ -22,11 +22,16 @@ function App() {
 
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({})
+  const [cardToDelete, setCardToDelete] = useState(null);
  
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
-  // const handleDeletePopupClick = () => setIsConfirmDeletePopupOpen(true) confirmation without support yet
+  
+  function handleDeletePopupClick(card) {
+    setCardToDelete(card); 
+    setIsDeletePopupOpen(true); 
+  }
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -38,7 +43,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsImagePopupOpen(false);
-    setIsConfirmDeletePopupOpen(false);
+    setIsDeletePopupOpen(false);
   }
 
   useEffect (() => {
@@ -118,6 +123,21 @@ function App() {
     }
   }
 
+  function handleCardDelete(card) {
+    if (!cardToDelete) {
+      return;
+    }
+
+    api
+      .deleteCard(cardToDelete._id)
+      .then(() => {
+       
+        setCards((state) => state.filter((c) => c._id !== cardToDelete._id));
+        closeAllPopups();
+      })
+      .catch((err) => console.error(`Erro ao eliminar o cartao: ${err}`));
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
      <div className="page">
@@ -129,9 +149,8 @@ function App() {
        onEditAvatarClick={handleEditAvatarClick}
        cards={cards}
        onCardClick={handleCardClick}
-      //  onDeleteClick={handleDeletePopupClick} confirmation without support yet
+       onCardDelete={handleDeletePopupClick} 
        onCardLike={handleCardLike}
-       onCardDelete={handleCardDelete}
        />
 
       <ImagePopup 
@@ -156,16 +175,11 @@ function App() {
        onClose={closeAllPopups}
        onAddPlaceSubmit={handleNewCardSubmit}/>
       
-        <PopupWithForm 
-        name="delete-confirmation"
-        title="Tem certeza?"
-        isOpen={isConfirmDeletePopupOpen}
+       <ConfirmDelete
+        isOpen={isDeletePopupOpen}
         onClose={closeAllPopups}
-        isDeleteConfirmation={true}
-      ></PopupWithForm>
+        onConfirmDelete={handleCardDelete}/>
     
-
-        <ImagePopup></ImagePopup>
       <Footer />
      </div>
     </CurrentUserContext.Provider>

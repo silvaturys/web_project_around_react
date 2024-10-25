@@ -11,7 +11,6 @@ export default function Main({
   onEditAvatarClick,
   cards, 
   onCardClick,
-  // onDeleteClick, confirmation without support yet
   onCardLike,
   onCardDelete
 }){

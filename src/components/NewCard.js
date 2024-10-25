@@ -4,6 +4,8 @@ import PopupWithForm from "./PopupWithForm";
 export default function NewCard({ isOpen, onClose, onAddPlaceSubmit }) {
     const [title, setTitle] = useState("");
     const [link, setLink] = useState("");
+    const [isPatching, setIsPatching] = React.useState(false);
+
     function handleChangeTitle(e) {
         setTitle(e.target.value);
     }
@@ -14,6 +16,7 @@ export default function NewCard({ isOpen, onClose, onAddPlaceSubmit }) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        setIsPatching(true);
         onAddPlaceSubmit({
         name: title,
         link,
@@ -25,7 +28,8 @@ export default function NewCard({ isOpen, onClose, onAddPlaceSubmit }) {
         title="Novo Local"
         isOpen={isOpen}
         onClose={onClose}
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
+        textBtn={isPatching ? "Criando..." : "Criar"}>
         <input
           name="name"
           type="text"

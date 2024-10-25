@@ -1,4 +1,3 @@
-import trash from "../images/Trash.svg"
 import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 

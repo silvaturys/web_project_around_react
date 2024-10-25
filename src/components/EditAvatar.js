@@ -6,7 +6,7 @@ export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
     const currentUser = useContext(CurrentUserContext);
     const avatarRef = useRef("");
     const [link, setLink] = useState("");
-    
+    const [isPatching, setIsPatching] = React.useState(false);
 
     React.useEffect(() => {
         setLink(currentUser.avatar);
@@ -14,6 +14,7 @@ export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
 
       function handleSubmit(e) {
         e.preventDefault();
+        setIsPatching(true);
         onUpdateAvatar({
           avatar: avatarRef.current.value, 
         });
@@ -25,7 +26,8 @@ export default function EditAvatar ({ isOpen, onClose, onUpdateAvatar }) {
         title="Alterar a foto de perfil"
         isOpen={isOpen}
         onClose={onClose}
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
+        textBtn={isPatching ? "Salvando..." : "Salvar"}>
         <input
           type="url"
           className="popup__input"
